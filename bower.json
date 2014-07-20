@@ -1,0 +1,7 @@
+{
+  "name": "recaptcha",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#master"
+  }
+}
