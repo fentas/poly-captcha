@@ -1,0 +1,41 @@
+<!--
+Copyright (c) 2014 mui-is Authors. All rights reserved.
+
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+
+-->
+
+<polymer-element name="re-captcha" attributes="key">
+  <template>
+
+    <link rel="stylesheet" href="re-captcha.css">
+
+    <form>
+
+    </form>
+  </template>
+  <script>
+  (function() {
+
+    Polymer('re-captcha', {
+      srcLoaded: function() {
+        window.Recaptcha.create("{{key}}",
+          this.$.recaptcha,
+          {
+            theme: "custom",
+            callback: Recaptcha.focus_response_field
+          }
+        );
+      },
+      domReady: function() {
+
+      }
+    });
+
+  })();
+  </script>
+</polymer-element>
