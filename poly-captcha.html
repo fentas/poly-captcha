@@ -7,32 +7,98 @@ Copyright (c) 2014 mui-is Authors. All rights reserved.
 
 <!--
 
+        selector: "#captcha",
+        text: null,
+        randomText: true,
+        randomColours: true,
+        width: 300,
+        height: 200,
+        colour1: null,
+        colour2: null,
+        font: 'bold 48px "Comic Sans MS", cursive, sans-serif',
+        onSuccess: function () { alert('Correct!'); }
 -->
 
-<polymer-element name="re-captcha" attributes="key">
+<polymer-element name="poly-captcha" attributes="width height chars color onsuccess onfail">
+
+  <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+
   <template>
 
-    <link rel="stylesheet" href="re-captcha.css">
+    <link rel="stylesheet" href="poly-captcha.css">
+    <style>
+
+    </style>
 
     <form>
-
+      <canvas id="canvas"></canvas>
+      <input type="text" />
     </form>
   </template>
   <script>
   (function() {
 
+    var filter = {
+      blur: function(canvas) {
+
+      }
+    }
+
     Polymer('re-captcha', {
-      srcLoaded: function() {
-        window.Recaptcha.create("{{key}}",
-          this.$.recaptcha,
-          {
-            theme: "custom",
-            callback: Recaptcha.focus_response_field
+      context: null,
+      text: '',
+
+      _: {
+        generateText: function () {
+          this.text = '';
+          var length = Math.floor((Math.random() * 3) + 6);
+          for (var i = 0; i < length; i++) {
+            this.text += this.chars.charAt(Math.floor(Math.random() * this.chars.length));
           }
-        );
+        },
+        generateColor: function() {
+          return "rgb(" + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ")";
+        }
+      },
+
+      ready: function() {
+        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        this.font = 'Pacifico, "Comic Sans MS", cursive, sans-serif';
+
+        if ( !! this.$.canvas.getContext ) {
+          this.context = this.$.canvas.getContext("2d");
+          this.context.font = this.font;
+        }
+        else {
+          // no canvas support
+
+        }
       },
       domReady: function() {
 
+      },
+
+      fontChanged: function(oval, nval) {
+        this.context.font = nval + ', Verdana';
+      }
+
+      createCaptcha: function() {
+
+        var width = 200;
+        // filters
+
+            context.fillStyle = gradient2;
+
+            context.setTransform((Math.random() / 10) + 0.9,    //scalex
+                                0.1 - (Math.random() / 5),      //skewx
+                                0.1 - (Math.random() / 5),      //skewy
+                                (Math.random() / 10) + 0.9,     //scaley
+                                (Math.random() * 20) + 10,      //transx
+                                100);                           //transy
+
+            context.fillText(this._settings.text, 0, 0);
+
+            context.setTransform(1, 0, 0, 1, 0, 0);
       }
     });
 
