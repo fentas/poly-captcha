@@ -1,5 +1,5 @@
 {
-  "name": "recaptcha",
+  "name": "poly-captcha",
   "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer#master"

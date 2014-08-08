@@ -4,6 +4,7 @@ Copyright (c) 2014 mui-is Authors. All rights reserved.
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../image-filter/image-filter.html">
 
 <!--
 
@@ -19,36 +20,40 @@ Copyright (c) 2014 mui-is Authors. All rights reserved.
         onSuccess: function () { alert('Correct!'); }
 -->
 
-<polymer-element name="poly-captcha" attributes="width height chars color onsuccess onfail">
+<polymer-element name="poly-captcha" attributes="width height length chars filters colorize onsuccess onfail">
 
-  <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
 
   <template>
 
     <link rel="stylesheet" href="poly-captcha.css">
     <style>
+      :host {
+        width: 300px;
+        height: 200px;
+        border: 1px solid #CCC;
+        display: block;
+      }
 
+      #canvas {
+        width: 100%;
+        height: 80%;
+
+      }
     </style>
 
     <form>
-      <canvas id="canvas"></canvas>
+      <image-filter id="captcha"></image-filter>
       <input type="text" />
     </form>
   </template>
   <script>
   (function() {
 
-    var filter = {
-      blur: function(canvas) {
-
-      }
-    }
-
-    Polymer('re-captcha', {
-      context: null,
+    Polymer('poly-captcha', {
       text: '',
+      chars: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+      font: 'normal 40px Pacifico, Arial, "Comic Sans MS", cursive, sans-serif',
 
-      _: {
         generateText: function () {
           this.text = '';
           var length = Math.floor((Math.random() * 3) + 6);
@@ -58,12 +63,11 @@ Copyright (c) 2014 mui-is Authors. All rights reserved.
         },
         generateColor: function() {
           return "rgb(" + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ", " + Math.floor((Math.random() * 255)) + ")";
-        }
-      },
+        },
 
       ready: function() {
-        this.chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        this.font = 'Pacifico, "Comic Sans MS", cursive, sans-serif';
+        this.width = 300;
+        this.height = 100;
 
         if ( !! this.$.canvas.getContext ) {
           this.context = this.$.canvas.getContext("2d");
@@ -76,29 +80,34 @@ Copyright (c) 2014 mui-is Authors. All rights reserved.
       },
       domReady: function() {
 
+        this.createCaptcha();
       },
 
       fontChanged: function(oval, nval) {
         this.context.font = nval + ', Verdana';
-      }
+      },
 
       createCaptcha: function() {
+        // Use the identity matrix while clearing the canvas
+        this.context.setTransform(1, 0, 0, 1, 0, 0);
+        this.context.clearRect(0, 0, this.$.canvas.width, this.$.canvas.height);
 
-        var width = 200;
         // filters
 
-            context.fillStyle = gradient2;
-
-            context.setTransform((Math.random() / 10) + 0.9,    //scalex
+          //  context.fillStyle = gradient2;
+        this.generateText();
+        console.warn(this.text);
+        this.context.font = this.font;
+            this.context.setTransform((Math.random() / 10) + 0.9,    //scalex
                                 0.1 - (Math.random() / 5),      //skewx
                                 0.1 - (Math.random() / 5),      //skewy
                                 (Math.random() / 10) + 0.9,     //scaley
                                 (Math.random() * 20) + 10,      //transx
-                                100);                           //transy
+                                50);                           //transy
 
-            context.fillText(this._settings.text, 0, 0);
+            this.context.fillText(this.text, 0, 0);
 
-            context.setTransform(1, 0, 0, 1, 0, 0);
+            this.context.setTransform(1, 0, 0, 1, 0, 0);
       }
     });
 
